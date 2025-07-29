@@ -1,5 +1,3 @@
-Initialize the migration
---npx sequelize-cli init
+run the following code:
 
-Create a model template
---npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string
+#npm run init
