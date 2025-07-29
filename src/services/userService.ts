@@ -20,11 +20,15 @@ export default class UserService {
   }
 
   static async getUser(id: string) {
-    const user = await User.findByPk(id);
-    if (!user) {
+    if (!id) {
+      throw new Error("User ID is required");
+    }
+    try {
+      const user = await User.findByPk(id);
+      return user;
+    } catch (error) {
       throw new Error("User not found");
     }
-    return user;
   }
 
   static async getUserByEmail(email: string) {

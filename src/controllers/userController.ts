@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import UserService from "../services/userService";
 import { formatUser } from "../utils/formatUser";
+import { verify } from "jsonwebtoken";
 
 export default class UserController {
   static async createUser(req: Request, res: Response) {
@@ -15,11 +16,14 @@ export default class UserController {
   }
 
   static async getUser(req: Request, res: Response) {
+    if (!req.params.id) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+    const user = await UserService.getUser(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
     try {
-      const user = await UserService.getUser(req.params.id);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
       return res.status(200).json(formatUser(user));
     } catch (error: any) {
       return res.status(400).json({ error: error.message });
@@ -36,6 +40,9 @@ export default class UserController {
   }
 
   static async updateUser(req: Request, res: Response) {
+    if (!req.params.id) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
     try {
       const user = await UserService.updateUser(req.params.id, req.body);
       return res
@@ -47,6 +54,9 @@ export default class UserController {
   }
 
   static async deleteUser(req: Request, res: Response) {
+    if (!req.params.id) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
     try {
       await UserService.deleteUser(req.params.id);
       return res.status(204).send();
